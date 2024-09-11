@@ -6,6 +6,7 @@ declare type SearchParamProps = {
 };
 
 declare type Gender = "男性" | "女性" | "不便透露";
+declare type ProgramStatus = '正在進行' | '已完成' | '失蹤' | '退費';
 declare type Status = "pending" | "scheduled" | "cancelled";
 
 declare interface CreateUserParams {
@@ -15,6 +16,7 @@ declare interface CreateUserParams {
 }
 declare interface User extends CreateUserParams {
     $id: string;
+    emailVerification: string;
 }
 
 declare interface RegisterUserParams extends CreateUserParams {
@@ -59,8 +61,20 @@ declare type CreateRecordParams = {
 declare type UpdateRecordParams = {
     recordId: string;
     userId: string;
-    timeZone: string;
+    //timeZone: string;
     record: Record;
     type: string;
     cancellationReason: string | null;
 };
+
+declare type CreateProgramParams = {
+    ProgramID: string;
+    studentId: string;
+    projectCategoryId: string;
+    programStatus: ProgramStatus;
+    startAt: Date;
+    endAt: Date;
+    firstReview: Date;
+    secondReview: Date;
+    programNote: string | null;
+}

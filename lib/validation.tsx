@@ -1,5 +1,33 @@
 import { z } from "zod";
 
+export const ProgramFormValidation = z.object({
+    ProgramID: z
+        .string()
+        .min(2, "id must be at least 2 characters")
+        .max(150, "id must be at most 150 characters"),
+    studentId: z
+        .string()
+        .min(2, "student_id must be at least 2 characters")
+        .max(150, "student_id must be at most 50 characters"),
+    projectCategoryId: z
+        .string()
+        .min(2, "member_id must be at least 2 characters")
+        .max(50, "member_id must be at most 50 characters"),
+    programStatus: z.enum(['正在進行', '已完成', '失蹤', '退費']),
+    startAt: z.coerce.date(),
+    endAt: z.coerce.date(),
+    firstReview: z.coerce.date(),
+    secondReview: z.coerce.date(),
+    programNote: z
+        .string()
+        .min(2, "Name must be at least 2 characters")
+        .max(550, "Name must be at most 50 characters"),
+    // review_for_first:stamp_time
+    // review_for_second:stamp_time
+    // notes
+
+})
+
 export const UserFormValidation = z.object({
     name: z
         .string()

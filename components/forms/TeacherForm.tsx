@@ -45,7 +45,7 @@ const TeacherForm = () => {
             try {
                 const { users } = await getAllUsers();
                 setUserList(users);
-                console.log(users);
+                //console.log(`these are users: ${JSON.stringify(users, null, 2)}`);
             } catch (error) {
                 console.error("Failed to fetch users:", error);
             }
@@ -64,8 +64,13 @@ const TeacherForm = () => {
             };
             // 檢查是否已經存在該 email 的使用者
             const existingUser = userList.find(user => user.email === values.email);
+            console.log(`existingUser:${JSON.stringify(existingUser?.emailVerification)}`)
 
-            if (existingUser) {
+            if (existingUser?.emailVerification) {
+                router.push(`/admin/${existingUser.$id}`);
+            }
+
+            else if (existingUser) {
                 // 如果已經存在，跳轉到 /teachers/${existingUser.$id}/new-record
                 router.push(`/teachers/${existingUser.$id}/new-record`);
             } else {

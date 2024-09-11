@@ -28,9 +28,10 @@ export default function Home({ searchParams }: SearchParamProps) {
             <p className="justify-items-end text-dark-600 xl:text-left">
               © 2024 Teachcake
             </p>
-            <Link href="/?admin=true" className="text-green-500">
-              Admin
-            </Link>
+
+            {/* <Link href="/?admin=true" className="text-green-500">
+              Admin(這是原本用密碼登入的作法，因需求調整為透過Auth的email verified來判定是否為admin)
+            </Link> */}
           </div>
         </div>
       </section >

@@ -27,3 +27,16 @@ export interface Record extends Models.Document {
     userId: string;
     cancellationReason: string | null;
 }
+
+export interface Program extends Models.Document {
+    ProgramID: string;
+    studentId: string;
+    projectCategoryId: string;
+    programStatus: ProgramStatus;
+    startAt: Date;
+    endAt: Date;
+    firstReview: Date;
+    secondReview: Date;
+    programNote: string | null;
+
+}

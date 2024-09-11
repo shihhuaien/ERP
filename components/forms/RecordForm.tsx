@@ -93,11 +93,10 @@ const RecordForm = ({ userId, type, teacherId, record, setOpen }: {
                     userId,
                     recordId: record?.$id!,
                     record: {
-                        //待處理
                         studentProgram: values.studentProgram,
                         schedule: new Date(values.schedule),
                         status: status as Status,
-                        cancellationReason: values.cancellationReason,
+                        cancellationReason: values.cancellationReason || "",
                     },
                     type,
                 };

@@ -1,16 +1,19 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Form } from "@/components/ui/form"
-import CustomFormField from "../CustomFormField"
-import SubmitButton from "../SubmitButton"
-import { useEffect, useState } from "react"
-import { UserFormValidation } from "@/lib/validation";
-import { useRouter } from "next/navigation"
-import { createUser, getAllUsers } from "@/lib/actions/teacher.actions"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Form } from "@/components/ui/form";
+import CustomFormField from "../CustomFormField";
+import SubmitButton from "../SubmitButton";
+import { useEffect, useState } from "react";
+import { ProgramFormValidation } from "@/lib/validation";
+import { useRouter } from "next/navigation";
+import { getAllUsers } from "@/lib/actions/teacher.actions";
+import { ProgramStatus } from "@/constants";
+import { SelectItem } from "../ui/select";
+import { createProgram } from "@/lib/actions/program.actions";
+
 
 export enum FormFieldType {
     INPUT = 'input',
@@ -25,17 +28,15 @@ export enum FormFieldType {
     INTER = 'inter'
 }
 
-const TeacherForm = () => {
+const ProgramForm = () => {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [userList, setUserList] = useState<User[]>([]);
 
-    const form = useForm<z.infer<typeof UserFormValidation>>({
-        resolver: zodResolver(UserFormValidation),
+    const form = useForm<z.infer<typeof ProgramFormValidation>>({
+        resolver: zodResolver(ProgramFormValidation),
         defaultValues: {
-            name: "",
-            email: "",
-            // phone: "",
+
         },
     })
 
@@ -55,29 +56,21 @@ const TeacherForm = () => {
     }, []);
 
     // 表單送出後要做的事
-    const onSubmit = async (values: z.infer<typeof UserFormValidation>) => {
+    const onSubmit = async (values: z.infer<typeof ProgramFormValidation>) => {
         setIsLoading(true);
         try {
-            const user = {
-                name: values.name,
-                email: values.email,
-            };
-            // 檢查是否已經存在該 email 的使用者
-            const existingUser = userList.find(user => user.email === values.email);
+            const newProgramData = {
+                ...values,
+                startAt: new Date(values.startAt),
+                endAt: new Date(values.endAt),
+                firstReview: new Date(values.firstReview),
+                secondReview: new Date(values.secondReview),
 
-            if (existingUser) {
-                // 如果已經存在，跳轉到 /teachers/${existingUser.$id}/new-record
-                router.push(`/teachers/${existingUser.$id}/new-record`);
-            } else {
-                // 如果該 email 不存在，則創建新 user
-                const newUser = await createUser(user);
-
-                console.log(`this is newUser that insert in db:${newUser}`);
-
-                if (newUser) {
-                    router.push(`/teachers/${newUser.$id}/register`);
-                }
             }
+
+            const newProgram = await createProgram(newProgramData);
+            router.push(`http://localhost:3000/admin/`);
+
         } catch (error) {
             console.log(error);
         } finally {
@@ -87,31 +80,95 @@ const TeacherForm = () => {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12 flex-1">
 
                 <CustomFormField
                     fieldType={FormFieldType.INPUT}
                     control={form.control}
-                    name="name"
-                    label="總監姓名"
-                    placeholder="陳總監"
-                    iconSrc="/assets/icons/user.svg"
-                    iconAlt="user"
-                />
+                    name="ProgramID"
+                    label="ProgramID"
+                    placeholder="請填寫專案的 ID"
 
+                />
                 <CustomFormField
                     fieldType={FormFieldType.INPUT}
                     control={form.control}
-                    name="email"
-                    label="Email"
-                    placeholder="teacher@google.com"
-                    iconSrc="/assets/icons/email.svg"
-                    iconAlt="email"
+                    name="studentId"
+                    label="學生 ID"
+                    placeholder="學生的ID"
                 />
-                <SubmitButton isLoading={isLoading}>開始</SubmitButton>
+
+
+                <div className="flex flex-col gap-6 xl:flex-row">
+                    <CustomFormField
+                        fieldType={FormFieldType.INPUT}
+                        control={form.control}
+                        name="projectCategoryId"
+                        label="專案分類ID"
+                        placeholder="分類的ID"
+                    />
+
+                    <CustomFormField
+                        fieldType={FormFieldType.SELECT}
+                        control={form.control}
+                        name="programStatus"
+                        label="專案狀態"
+                        placeholder="四選一">
+                        {ProgramStatus.map((status, i) => (
+                            <SelectItem key={i} value={status}>
+                                <div className="flex cursor-pointer items-center gap-2">
+                                    <p>{status}</p>
+                                </div>
+                            </SelectItem>
+                        ))}
+                    </CustomFormField>
+                </div>
+
+                <div className="flex flex-col gap-6 xl:flex-row">
+                    <CustomFormField
+                        fieldType={FormFieldType.DATE_PICKER}
+                        control={form.control}
+                        name="startAt"
+                        label="專案啟動日"
+                    />
+                    <CustomFormField
+                        fieldType={FormFieldType.DATE_PICKER}
+                        control={form.control}
+                        name="endAt"
+                        label="專案到期日"
+                    />
+                </div>
+
+                <div className="flex flex-col gap-6 xl:flex-row">
+                    <CustomFormField
+                        fieldType={FormFieldType.DATE_PICKER}
+                        control={form.control}
+                        name="firstReview"
+                        label="第一階段驗收時間"
+                    />
+                    <CustomFormField
+                        fieldType={FormFieldType.DATE_PICKER}
+                        control={form.control}
+                        name="secondReview"
+                        label="完成驗收時間"
+                    />
+                </div>
+
+                <div className="flex flex-col gap-6 xl:flex-row">
+                    <CustomFormField
+                        fieldType={FormFieldType.TEXTAREA}
+                        control={form.control}
+                        name="programNote"
+                        label="備註"
+                        placeholder="其他記錄"
+                    />
+                </div>
+
+
+                <SubmitButton isLoading={isLoading}>送出</SubmitButton>
             </form>
         </Form>
     )
 }
 
-export default TeacherForm
+export default ProgramForm

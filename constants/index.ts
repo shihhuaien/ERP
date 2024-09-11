@@ -1,3 +1,5 @@
+import { toDate } from "date-fns";
+
 export const GenderOptions = ['男性', '女性', '不便透露'];
 
 export const AppId = ['無限', 'kkschoole'];
@@ -349,3 +351,36 @@ export const StudentProgram = [
     },
 
 ];
+
+export const Students = [{
+    id: '111',
+    name: 'Timo',
+    mail: 'timoo@gmail.com',
+    create_at: new Date().toISOString(),
+    contract_end: new Date().toISOString(),
+    brand: '無限',
+    projects: { project1: 'id1111', project2: 'id2222' }
+},
+{
+    id: '222',
+    name: 'Timoo',
+    mail: 'timoo@gmail.com',
+    create_at: new Date().toISOString(),
+    contract_end: new Date().toISOString(),
+    brand: '無限',
+    projects: { project1: 'id1111', project2: 'id2222' }
+},
+{
+    id: '333',
+    name: 'Timooo',
+    mail: 'timoo@gmail.com',
+    create_at: new Date().toISOString(),
+    contract_end: new Date().toISOString(),
+    brand: '無限',
+    projects: { project1: 'id1111', project2: 'id2222' }
+}
+]
+
+export const ProgramStatus = [
+    '正在進行', '已完成', '失蹤', '退費'
+]

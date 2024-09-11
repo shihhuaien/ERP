@@ -9,7 +9,8 @@ import { columns } from '@/components/table/columns';
 
 
 
-const Admin = async () => {
+const Admin = async ({ params }: { params: { userId: string } }) => {
+    const userId = params.userId;  // 獲取傳入的 userId
     const records = await getRecentRecordList()
 
     return (
@@ -25,8 +26,7 @@ const Admin = async () => {
                     />
                 </Link>
 
-
-                <Link href="/admin/new-program" passHref>
+                <Link href={`/admin/${userId}/new-program`} passHref>
                     <button className="bg-gray-900 text-gray-400 px-4 py-2 rounded">
                         設定專案
                     </button>
